@@ -855,13 +855,21 @@
         }
         
         .footer-logo {
-            font-size: 2rem;
-            font-weight: 800;
-            background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            margin-bottom: 16px;
+            margin-bottom: 24px;
+        }
+        
+        .footer-logo img {
+            height: 150px;
+            width: auto;
+            opacity: 0.85;
+            transition: all 0.3s ease;
+            image-rendering: -webkit-optimize-contrast;
+            image-rendering: crisp-edges;
+        }
+        
+        .footer-logo img:hover {
+            opacity: 1;
+            transform: scale(1.05);
         }
         
         .footer-tagline {
@@ -1058,9 +1066,9 @@
                 
                 <div class="results-card">
                     <div class="results-main">
-                        <div class="results-label">Tracisz około:</div>
+                        <div class="results-label" id="results-label">Tracisz około:</div>
                         <div class="results-amount" id="lost-profit">0 zł</div>
-                        <p class="results-subtext">To tylko różnica między potencjałem a tym, co dziś dowozi Twoja strona.</p>
+                        <p class="results-subtext" id="results-subtext">To tylko różnica między potencjałem a tym, co dziś dowozi Twoja strona.</p>
                         
                         <div class="results-stats">
                             <div class="stat-item">
@@ -1248,7 +1256,7 @@
     <!-- Footer -->
     <footer class="footer">
         <div class="container">
-            <div class="footer-logo">DAYS</div>
+            <div class="footer-logo"><img src="logo_days.png" alt="logo DAYS"></div>
             <p class="footer-tagline">Twój cyfrowy partner w biznesie</p>
             
             <div class="privacy-note">
@@ -1275,6 +1283,8 @@
         const potentialClientsEl = document.getElementById('potential-clients');
         const insightTextEl = document.getElementById('insight-text');
         const recoveredProfitEl = document.getElementById('recovered-profit');
+        const resultsLabelEl = document.getElementById('results-label');
+        const resultsSubtextEl = document.getElementById('results-subtext');
         
         const actualBar = document.getElementById('actual-bar');
         const potentialBar = document.getElementById('potential-bar');
@@ -1282,6 +1292,15 @@
         const potentialBarLabel = document.getElementById('potential-bar-label');
         
         let period = 'year';
+        
+        // Store previous values for smooth animations
+        const previousValues = {
+            lostProfit: 0,
+            lostClients: 0,
+            actualClients: 0,
+            potentialClients: 0,
+            recoveredProfit: 0
+        };
         
         // Toggle period
         document.querySelectorAll('.toggle-option').forEach(option => {
@@ -1330,7 +1349,7 @@
         });
         
         // Calculate results
-        function calculateResults() {
+        function calculateResults(animate = true) {
             const monthlyVisits = parseFloat(visits.value) || 0;
             const potentialRate = parseFloat(potentialSlider.value) / 100;
             const actualRate = parseFloat(actualSlider.value) / 100;
@@ -1344,16 +1363,35 @@
             const lostClients = Math.max(0, potentialClients - actualClients);
             const lostProfit = lostClients * profitPerClient;
             
+            // Check if actual conversion exceeds potential
+            const isOverPerforming = actualRate > potentialRate;
+            
             const improvedClients = Math.round(monthlyVisits * improvedRate * multiplier);
             const recoveredClients = Math.max(0, improvedClients - actualClients);
             const recoveredProfit = recoveredClients * profitPerClient;
             
-            // Update UI with animation
-            animateValue(lostProfitEl, 0, lostProfit, 1000, ' zł');
-            animateValue(lostClientsEl, 0, lostClients, 1000);
-            animateValue(actualClientsEl, 0, actualClients, 1000);
-            animateValue(potentialClientsEl, 0, potentialClients, 1000);
-            animateValue(recoveredProfitEl, 0, recoveredProfit, 1000, ' zł');
+            if (animate) {
+                // Update UI with animation
+                animateValue(lostProfitEl, previousValues.lostProfit, lostProfit, 600, ' zł', 'lostProfit');
+                animateValue(lostClientsEl, previousValues.lostClients, lostClients, 600, '', 'lostClients');
+                animateValue(actualClientsEl, previousValues.actualClients, actualClients, 600, '', 'actualClients');
+                animateValue(potentialClientsEl, previousValues.potentialClients, potentialClients, 600, '', 'potentialClients');
+                animateValue(recoveredProfitEl, previousValues.recoveredProfit, recoveredProfit, 600, ' zł', 'recoveredProfit');
+            } else {
+                // Set values immediately without animation
+                lostProfitEl.textContent = formatNumber(lostProfit) + ' zł';
+                lostClientsEl.textContent = formatNumber(lostClients);
+                actualClientsEl.textContent = formatNumber(actualClients);
+                potentialClientsEl.textContent = formatNumber(potentialClients);
+                recoveredProfitEl.textContent = formatNumber(recoveredProfit);
+                
+                // Store initial values
+                previousValues.lostProfit = lostProfit;
+                previousValues.lostClients = lostClients;
+                previousValues.actualClients = actualClients;
+                previousValues.potentialClients = potentialClients;
+                previousValues.recoveredProfit = recoveredProfit;
+            }
             
             // Update bars
             const maxRate = Math.max(potentialRate, actualRate, improvedRate) * 100;
@@ -1365,40 +1403,77 @@
             actualBarLabel.textContent = (actualRate * 100).toFixed(1) + '%';
             potentialBarLabel.textContent = (potentialRate * 100).toFixed(1) + '%';
             
+            // Update labels based on performance
+            if (isOverPerforming) {
+                resultsLabelEl.textContent = 'Sukces! Zyskujesz:';
+                resultsSubtextEl.textContent = 'Twoja strona działa lepiej niż zakładany potencjał - gratulacje!';
+            } else {
+                resultsLabelEl.textContent = 'Tracisz około:';
+                resultsSubtextEl.textContent = 'To tylko różnica między potencjałem a tym, co dziś dowozi Twoja strona.';
+            }
+            
             // Update insight
-            updateInsight(lostClients, lostProfit, profitPerClient);
+            updateInsight(lostClients, lostProfit, profitPerClient, isOverPerforming, actualRate, potentialRate);
         }
         
-        function animateValue(element, start, end, duration, suffix = '') {
+        function animateValue(element, start, end, duration, suffix = '', key = null) {
+            // Clear any existing animation
+            if (element.animationTimer) {
+                clearInterval(element.animationTimer);
+            }
+            
             const range = end - start;
             const increment = range / (duration / 16);
             let current = start;
             
-            const timer = setInterval(() => {
+            element.animationTimer = setInterval(() => {
                 current += increment;
                 if ((increment > 0 && current >= end) || (increment < 0 && current <= end)) {
                     current = end;
-                    clearInterval(timer);
+                    clearInterval(element.animationTimer);
+                    element.animationTimer = null;
                 }
                 element.textContent = formatNumber(Math.round(current)) + suffix;
             }, 16);
+            
+            // Store the final value for next animation
+            if (key) {
+                previousValues[key] = end;
+            }
         }
         
         function formatNumber(num) {
             return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
         }
         
-        function updateInsight(lostClients, lostProfit, profitPerClient) {
-            const insights = [
-                `To równowartość ${lostClients} nowych klientów, którzy już byli blisko decyzji.`,
-                `To więcej niż koszt świetnej strony — a dzieje się co roku.`,
-                `Twoja strona może odzyskać te pieniądze, zanim je stracisz.`,
-                `To nie jest marketing. To matematyka.`,
-                `Każdy stracony klient to ${formatNumber(profitPerClient)} zł, które mogły być Twoje.`
-            ];
-            
-            const randomInsight = insights[Math.floor(Math.random() * insights.length)];
-            insightTextEl.textContent = randomInsight;
+        function updateInsight(lostClients, lostProfit, profitPerClient, isOverPerforming, actualRate, potentialRate) {
+            if (isOverPerforming) {
+                // Strona działa lepiej niż oczekiwano!
+                const overPerformanceInsights = [
+                    `Gratulacje! Twoja strona konwertuje ${(actualRate * 100).toFixed(1)}% - to lepiej niż zakładany potencjał ${(potentialRate * 100).toFixed(1)}%!`,
+                    `Świetna robota! Przekraczasz oczekiwania o ${((actualRate - potentialRate) * 100).toFixed(1)} punktów procentowych.`,
+                    `Twoja strona działa wyśmienicie - konwersja wyższa niż potencjał oznacza doskonałą optymalizację!`,
+                    `Zero strat - Twoja strona pracuje na pełnych obrotach i dowozi więcej niż zakładano.`
+                ];
+                const randomInsight = overPerformanceInsights[Math.floor(Math.random() * overPerformanceInsights.length)];
+                insightTextEl.textContent = randomInsight;
+                insightTextEl.parentElement.style.borderColor = 'var(--success)';
+                insightTextEl.parentElement.style.background = 'rgba(0, 255, 136, 0.05)';
+            } else {
+                // Normalne insighty o stratach
+                const insights = [
+                    `To równowartość ${lostClients} nowych klientów, którzy już byli blisko decyzji.`,
+                    `To więcej niż koszt świetnej strony — a dzieje się co roku.`,
+                    `Twoja strona może odzyskać te pieniądze, zanim je stracisz.`,
+                    `To nie jest marketing. To matematyka.`,
+                    `Każdy stracony klient to ${formatNumber(profitPerClient)} zł, które mogły być Twoje.`
+                ];
+                
+                const randomInsight = insights[Math.floor(Math.random() * insights.length)];
+                insightTextEl.textContent = randomInsight;
+                insightTextEl.parentElement.style.borderColor = 'rgba(0, 245, 212, 0.2)';
+                insightTextEl.parentElement.style.background = 'rgba(0, 245, 212, 0.05)';
+            }
         }
         
         // Quiz Logic
@@ -1508,8 +1583,8 @@
             });
         });
         
-        // Initial calculation
-        calculateResults();
+        // Initial calculation (without animation)
+        calculateResults(false);
     </script>
 </body>
 </html>
