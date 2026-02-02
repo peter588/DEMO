@@ -1,0 +1,1595 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Twoja strona może pracować • DAYS Demo</title>
+    
+    <!-- Google Fonts - Premium Typography -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --bg-primary: #0a0a0f;
+            --bg-secondary: #14141f;
+            --bg-elevated: #1a1a2e;
+            --text-primary: #f8f9fa;
+            --text-secondary: #b4b4c8;
+            --text-muted: #6b6b8a;
+            --accent-primary: #00f5d4;
+            --accent-secondary: #00b4cc;
+            --accent-tertiary: #0088ff;
+            --success: #00ff88;
+            --warning: #ffd700;
+            --border: rgba(255, 255, 255, 0.08);
+            --glow: rgba(0, 245, 212, 0.15);
+            
+            --font-display: 'Sora', system-ui, sans-serif;
+            --font-mono: 'JetBrains Mono', monospace;
+            
+            --radius-sm: 8px;
+            --radius-md: 16px;
+            --radius-lg: 24px;
+            --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.4);
+            --shadow-md: 0 8px 32px rgba(0, 0, 0, 0.6);
+            --shadow-lg: 0 16px 64px rgba(0, 0, 0, 0.8);
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: var(--font-display);
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.6;
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+        
+        /* Animated Background */
+        .animated-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            overflow: hidden;
+            pointer-events: none;
+        }
+        
+        .mesh-gradient {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(circle at 20% 30%, rgba(0, 245, 212, 0.08) 0%, transparent 50%),
+                radial-gradient(circle at 80% 60%, rgba(0, 136, 255, 0.06) 0%, transparent 50%),
+                radial-gradient(circle at 40% 80%, rgba(0, 180, 204, 0.05) 0%, transparent 50%);
+            animation: meshMove 20s ease-in-out infinite;
+        }
+        
+        @keyframes meshMove {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            33% { transform: translate(20px, -30px) scale(1.05); }
+            66% { transform: translate(-30px, 20px) scale(0.95); }
+        }
+        
+        .grain {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0.03;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+        }
+        
+        /* Container */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 24px;
+            position: relative;
+            z-index: 1;
+        }
+        
+        /* Hero Section */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 120px 0 80px;
+            position: relative;
+        }
+        
+        .hero-content {
+            max-width: 900px;
+            animation: fadeInUp 1s ease-out;
+        }
+        
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .hero h1 {
+            font-size: clamp(2.5rem, 7vw, 5.5rem);
+            font-weight: 800;
+            line-height: 1.1;
+            margin-bottom: 32px;
+            letter-spacing: -0.03em;
+            background: linear-gradient(135deg, var(--text-primary) 0%, var(--accent-primary) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .hero .subtitle {
+            font-size: clamp(1.125rem, 2.5vw, 1.5rem);
+            color: var(--text-secondary);
+            margin-bottom: 48px;
+            max-width: 700px;
+            margin-left: auto;
+            margin-right: auto;
+            font-weight: 400;
+            line-height: 1.5;
+        }
+        
+        .cta-group {
+            display: flex;
+            gap: 16px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-bottom: 24px;
+        }
+        
+        .btn {
+            padding: 16px 32px;
+            border-radius: var(--radius-md);
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            border: none;
+            font-family: var(--font-display);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+            color: var(--bg-primary);
+            box-shadow: 0 4px 24px rgba(0, 245, 212, 0.3);
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 32px rgba(0, 245, 212, 0.4);
+        }
+        
+        .btn-primary:active {
+            transform: translateY(0);
+        }
+        
+        .btn-secondary {
+            background: var(--bg-elevated);
+            color: var(--text-primary);
+            border: 1px solid var(--border);
+        }
+        
+        .btn-secondary:hover {
+            border-color: var(--accent-primary);
+            background: rgba(0, 245, 212, 0.05);
+        }
+        
+        .micro-text {
+            font-size: 0.875rem;
+            color: var(--text-muted);
+            font-family: var(--font-mono);
+        }
+        
+        /* Section */
+        .section {
+            padding: 120px 0;
+            position: relative;
+        }
+        
+        .section-header {
+            text-align: center;
+            max-width: 800px;
+            margin: 0 auto 80px;
+        }
+        
+        .section-title {
+            font-size: clamp(2rem, 5vw, 3.5rem);
+            font-weight: 700;
+            margin-bottom: 24px;
+            letter-spacing: -0.02em;
+        }
+        
+        .section-description {
+            font-size: clamp(1.125rem, 2vw, 1.375rem);
+            color: var(--text-secondary);
+            line-height: 1.6;
+        }
+        
+        /* Feature Cards */
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 32px;
+            margin-top: 64px;
+        }
+        
+        .feature-card {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-lg);
+            padding: 40px;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .feature-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, transparent, rgba(0, 245, 212, 0.05));
+            opacity: 0;
+            transition: opacity 0.4s ease;
+        }
+        
+        .feature-card:hover {
+            transform: translateY(-8px);
+            border-color: var(--accent-primary);
+            box-shadow: var(--shadow-md);
+        }
+        
+        .feature-card:hover::before {
+            opacity: 1;
+        }
+        
+        .feature-icon {
+            width: 56px;
+            height: 56px;
+            background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+            border-radius: var(--radius-md);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.75rem;
+            margin-bottom: 24px;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .feature-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 12px;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .feature-description {
+            color: var(--text-secondary);
+            font-size: 0.9375rem;
+            line-height: 1.6;
+            position: relative;
+            z-index: 1;
+        }
+        
+        /* Calculator Section */
+        .calculator-wrapper {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-lg);
+            padding: 48px;
+            margin-top: 64px;
+            box-shadow: var(--shadow-md);
+        }
+        
+        .calculator-form {
+            display: grid;
+            gap: 32px;
+            margin-bottom: 48px;
+        }
+        
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        
+        .form-label {
+            font-size: 0.9375rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .tooltip {
+            position: relative;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 20px;
+            height: 20px;
+            background: var(--bg-elevated);
+            border-radius: 50%;
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            cursor: help;
+            border: 1px solid var(--border);
+        }
+        
+        .tooltip:hover .tooltip-text {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+        
+        .tooltip-text {
+            position: absolute;
+            bottom: 100%;
+            left: 50%;
+            transform: translateX(-50%) translateY(-8px);
+            background: var(--bg-elevated);
+            color: var(--text-secondary);
+            padding: 8px 12px;
+            border-radius: var(--radius-sm);
+            font-size: 0.8125rem;
+            white-space: nowrap;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.2s ease;
+            margin-bottom: 8px;
+            border: 1px solid var(--border);
+            box-shadow: var(--shadow-sm);
+            z-index: 10;
+        }
+        
+        .form-input {
+            background: var(--bg-elevated);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-md);
+            padding: 16px;
+            font-size: 1rem;
+            color: var(--text-primary);
+            font-family: var(--font-display);
+            transition: all 0.2s ease;
+        }
+        
+        .form-input:focus {
+            outline: none;
+            border-color: var(--accent-primary);
+            box-shadow: 0 0 0 3px var(--glow);
+        }
+        
+        .slider-container {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        
+        .slider-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+        
+        .slider {
+            flex: 1;
+            height: 6px;
+            background: var(--bg-elevated);
+            border-radius: 3px;
+            outline: none;
+            -webkit-appearance: none;
+        }
+        
+        .slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 20px;
+            height: 20px;
+            background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+            border-radius: 50%;
+            cursor: pointer;
+            box-shadow: 0 2px 8px rgba(0, 245, 212, 0.4);
+            transition: transform 0.2s ease;
+        }
+        
+        .slider::-webkit-slider-thumb:hover {
+            transform: scale(1.2);
+        }
+        
+        .slider::-moz-range-thumb {
+            width: 20px;
+            height: 20px;
+            background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+            border-radius: 50%;
+            cursor: pointer;
+            border: none;
+            box-shadow: 0 2px 8px rgba(0, 245, 212, 0.4);
+        }
+        
+        .slider-value {
+            font-family: var(--font-mono);
+            font-size: 1rem;
+            font-weight: 500;
+            color: var(--accent-primary);
+            min-width: 80px;
+            text-align: right;
+        }
+        
+        .toggle-group {
+            display: inline-flex;
+            background: var(--bg-elevated);
+            border-radius: var(--radius-md);
+            padding: 4px;
+            border: 1px solid var(--border);
+        }
+        
+        .toggle-option {
+            padding: 12px 24px;
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-weight: 500;
+            font-size: 0.9375rem;
+        }
+        
+        .toggle-option.active {
+            background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+            color: var(--bg-primary);
+        }
+        
+        .reset-btn {
+            padding: 12px 24px;
+            background: transparent;
+            border: 1px solid var(--border);
+            border-radius: var(--radius-md);
+            color: var(--text-secondary);
+            cursor: pointer;
+            font-family: var(--font-display);
+            font-size: 0.9375rem;
+            transition: all 0.2s ease;
+        }
+        
+        .reset-btn:hover {
+            border-color: var(--accent-primary);
+            color: var(--accent-primary);
+        }
+        
+        /* Results */
+        .results-card {
+            background: linear-gradient(135deg, rgba(0, 245, 212, 0.1), rgba(0, 180, 204, 0.05));
+            border: 1px solid var(--accent-primary);
+            border-radius: var(--radius-lg);
+            padding: 48px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .results-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(0, 245, 212, 0.1) 0%, transparent 70%);
+            animation: pulse 3s ease-in-out infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); opacity: 0.5; }
+            50% { transform: scale(1.1); opacity: 0.8; }
+        }
+        
+        .results-main {
+            position: relative;
+            z-index: 1;
+        }
+        
+        .results-label {
+            font-size: 1rem;
+            color: var(--text-secondary);
+            margin-bottom: 16px;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            font-weight: 600;
+        }
+        
+        .results-amount {
+            font-size: clamp(2.5rem, 6vw, 4.5rem);
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--accent-primary), var(--success));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 16px;
+            font-family: var(--font-mono);
+            letter-spacing: -0.02em;
+        }
+        
+        .results-subtext {
+            font-size: 1rem;
+            color: var(--text-secondary);
+            max-width: 600px;
+            margin: 0 auto 32px;
+        }
+        
+        .results-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 24px;
+            margin-top: 32px;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .stat-item {
+            text-align: center;
+        }
+        
+        .stat-value {
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: var(--accent-primary);
+            font-family: var(--font-mono);
+        }
+        
+        .stat-label {
+            font-size: 0.875rem;
+            color: var(--text-muted);
+            margin-top: 4px;
+        }
+        
+        .comparison-bars {
+            margin-top: 32px;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .bar-item {
+            margin-bottom: 16px;
+        }
+        
+        .bar-label {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+            font-size: 0.875rem;
+        }
+        
+        .bar-bg {
+            height: 12px;
+            background: var(--bg-elevated);
+            border-radius: 6px;
+            overflow: hidden;
+            position: relative;
+        }
+        
+        .bar-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--accent-primary), var(--accent-secondary));
+            border-radius: 6px;
+            transition: width 1s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+        }
+        
+        .bar-fill::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            animation: shimmer 2s infinite;
+        }
+        
+        @keyframes shimmer {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+        
+        .insight-box {
+            background: rgba(0, 245, 212, 0.05);
+            border: 1px solid rgba(0, 245, 212, 0.2);
+            border-radius: var(--radius-md);
+            padding: 24px;
+            margin-top: 32px;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .insight-text {
+            font-size: 1.0625rem;
+            color: var(--text-primary);
+            line-height: 1.6;
+            font-style: italic;
+        }
+        
+        /* Simulation Section */
+        .simulation-section {
+            margin-top: 48px;
+            padding-top: 48px;
+            border-top: 1px solid var(--border);
+        }
+        
+        .simulation-title {
+            font-size: 1.375rem;
+            font-weight: 600;
+            margin-bottom: 24px;
+            text-align: center;
+        }
+        
+        .simulation-result {
+            background: var(--bg-elevated);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-md);
+            padding: 24px;
+            margin-top: 24px;
+            text-align: center;
+        }
+        
+        .simulation-label {
+            font-size: 0.875rem;
+            color: var(--text-muted);
+            margin-bottom: 8px;
+        }
+        
+        .simulation-value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--success);
+            font-family: var(--font-mono);
+        }
+        
+        /* Quiz Section */
+        .quiz-wrapper {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .quiz-question {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-lg);
+            padding: 32px;
+            margin-bottom: 24px;
+            transition: all 0.3s ease;
+        }
+        
+        .quiz-question:hover {
+            border-color: var(--accent-primary);
+        }
+        
+        .question-text {
+            font-size: 1.125rem;
+            font-weight: 600;
+            margin-bottom: 20px;
+            color: var(--text-primary);
+        }
+        
+        .question-options {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+        
+        .quiz-option {
+            flex: 1;
+            min-width: 120px;
+            padding: 12px 20px;
+            background: var(--bg-elevated);
+            border: 2px solid var(--border);
+            border-radius: var(--radius-md);
+            cursor: pointer;
+            text-align: center;
+            transition: all 0.2s ease;
+            font-weight: 500;
+        }
+        
+        .quiz-option:hover {
+            border-color: var(--accent-primary);
+            background: rgba(0, 245, 212, 0.05);
+        }
+        
+        .quiz-option.selected {
+            background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+            border-color: var(--accent-primary);
+            color: var(--bg-primary);
+        }
+        
+        .quiz-submit {
+            margin-top: 32px;
+            text-align: center;
+        }
+        
+        .quiz-results {
+            background: var(--bg-secondary);
+            border: 2px solid var(--accent-primary);
+            border-radius: var(--radius-lg);
+            padding: 48px;
+            margin-top: 32px;
+            text-align: center;
+            animation: fadeInUp 0.6s ease-out;
+        }
+        
+        .quiz-score {
+            font-size: 4rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--accent-primary), var(--success));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 16px;
+        }
+        
+        .quiz-verdict {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 16px;
+        }
+        
+        .quiz-description {
+            font-size: 1.0625rem;
+            color: var(--text-secondary);
+            max-width: 600px;
+            margin: 0 auto 32px;
+            line-height: 1.6;
+        }
+        
+        .recommendations {
+            text-align: left;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        
+        .recommendations-title {
+            font-size: 1.125rem;
+            font-weight: 600;
+            margin-bottom: 16px;
+            color: var(--accent-primary);
+        }
+        
+        .recommendation-item {
+            background: var(--bg-elevated);
+            border-left: 3px solid var(--accent-primary);
+            padding: 16px;
+            margin-bottom: 12px;
+            border-radius: var(--radius-sm);
+            font-size: 0.9375rem;
+            line-height: 1.5;
+        }
+        
+        /* Examples Grid */
+        .examples-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 24px;
+            margin-top: 48px;
+        }
+        
+        .example-card {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-lg);
+            padding: 32px;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+        
+        .example-card:hover {
+            transform: translateY(-4px);
+            border-color: var(--accent-primary);
+        }
+        
+        .example-icon {
+            font-size: 2.5rem;
+            margin-bottom: 16px;
+        }
+        
+        .example-title {
+            font-size: 1.125rem;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+        
+        /* CTA Section */
+        .cta-section {
+            text-align: center;
+            padding: 120px 0;
+            background: linear-gradient(180deg, transparent, rgba(0, 245, 212, 0.03));
+        }
+        
+        .cta-title {
+            font-size: clamp(2rem, 5vw, 3.5rem);
+            font-weight: 700;
+            margin-bottom: 24px;
+        }
+        
+        .cta-subtitle {
+            font-size: clamp(1.125rem, 2vw, 1.375rem);
+            color: var(--text-secondary);
+            margin-bottom: 40px;
+            max-width: 700px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        /* Footer */
+        .footer {
+            padding: 80px 0 40px;
+            text-align: center;
+            border-top: 1px solid var(--border);
+        }
+        
+        .footer-logo {
+            margin-bottom: 24px;
+        }
+        
+        .footer-logo img {
+            height: 150px;
+            width: auto;
+            opacity: 0.85;
+            transition: all 0.3s ease;
+            image-rendering: -webkit-optimize-contrast;
+            image-rendering: crisp-edges;
+        }
+        
+        .footer-logo img:hover {
+            opacity: 1;
+            transform: scale(1.05);
+        }
+        
+        .footer-tagline {
+            font-size: 1rem;
+            color: var(--text-secondary);
+            margin-bottom: 32px;
+        }
+        
+        .privacy-note {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: var(--bg-elevated);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-md);
+            padding: 12px 20px;
+            font-size: 0.875rem;
+            color: var(--text-muted);
+            margin-top: 32px;
+        }
+        
+        /* Scroll Reveal Animation */
+        .scroll-reveal {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        .scroll-reveal.revealed {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        /* Mobile Responsive */
+        @media (max-width: 768px) {
+            .container {
+                padding: 0 16px;
+            }
+            
+            .section {
+                padding: 80px 0;
+            }
+            
+            .calculator-wrapper {
+                padding: 32px 24px;
+            }
+            
+            .results-card {
+                padding: 32px 24px;
+            }
+            
+            .cta-group {
+                flex-direction: column;
+            }
+            
+            .btn {
+                width: 100%;
+                justify-content: center;
+            }
+            
+            .quiz-question {
+                padding: 24px 20px;
+            }
+            
+            .question-options {
+                flex-direction: column;
+            }
+            
+            .quiz-option {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="animated-bg">
+        <div class="mesh-gradient"></div>
+        <div class="grain"></div>
+    </div>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="container">
+            <div class="hero-content">
+                <h1>Twoja strona może pracować.<br>Albo tylko istnieć.</h1>
+                <p class="subtitle">Zobacz, co potrafi nowoczesna strona internetowa — bez serwera, bez bazy danych, tylko JavaScript.</p>
+                <div class="cta-group">
+                    <a href="#calculator" class="btn btn-primary">
+                        Sprawdź, ile tracisz ↓
+                    </a>
+                    <a href="#examples" class="btn btn-secondary">
+                        Zobacz demo funkcji
+                    </a>
+                </div>
+                <p class="micro-text">Wszystko na tej stronie działa lokalnie w przeglądarce.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- What We Show Section -->
+    <section class="section scroll-reveal">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Co tu właściwie pokazujemy?</h2>
+                <p class="section-description">Większość stron to cyfrowe ulotki. My tworzymy strony, które liczą, analizują i prowadzą użytkownika do decyzji — bez skomplikowanego zaplecza.</p>
+            </div>
+            
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">⚡</div>
+                    <h3 class="feature-title">Natychmiastowe obliczenia</h3>
+                    <p class="feature-description">Bez oczekiwania na serwer. Wyniki pojawiają się w czasie rzeczywistym, podczas gdy użytkownik wpisuje dane.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon">🎯</div>
+                    <h3 class="feature-title">Interakcje i logika biznesowa</h3>
+                    <p class="feature-description">Strona rozumie kontekst, reaguje na dane i pomaga podejmować decyzje — tak jak doświadczony doradca.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon">💡</div>
+                    <h3 class="feature-title">Odpowiedź od razu</h3>
+                    <p class="feature-description">Użytkownik nie musi czekać ani wypełniać formularzy kontaktowych. Dostaje konkretną wartość natychmiast.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Calculator Section -->
+    <section class="section scroll-reveal" id="calculator">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Ile klientów tracisz przez „zwykłą" stronę?</h2>
+                <p class="section-description">Ten kalkulator to tylko JavaScript. Wyobraź sobie, co może zrobić dla Twojego klienta na Twojej stronie.</p>
+            </div>
+            
+            <div class="calculator-wrapper">
+                <div class="calculator-form">
+                    <div class="form-group">
+                        <label class="form-label">
+                            Średnia liczba odwiedzin miesięcznie
+                        </label>
+                        <input type="number" id="visits" class="form-input" value="1200" min="0">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">
+                            Procent odwiedzających, którzy powinni zostać klientami
+                            <span class="tooltip">
+                                ?
+                                <span class="tooltip-text">Zainteresowani, którzy trafiają na stronę</span>
+                            </span>
+                        </label>
+                        <div class="slider-wrapper">
+                            <input type="range" id="potential" class="slider" min="0" max="20" step="0.1" value="4.0">
+                            <span class="slider-value"><span id="potential-value">4.0</span>%</span>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">
+                            Rzeczywisty procent konwersji obecnej strony
+                            <span class="tooltip">
+                                ?
+                                <span class="tooltip-text">Ilu faktycznie zostaje klientami</span>
+                            </span>
+                        </label>
+                        <div class="slider-wrapper">
+                            <input type="range" id="actual" class="slider" min="0" max="20" step="0.1" value="1.2">
+                            <span class="slider-value"><span id="actual-value">1.2</span>%</span>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">
+                            Średni zysk z jednego klienta (zł)
+                        </label>
+                        <input type="number" id="profit" class="form-input" value="350" min="0">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Okres</label>
+                        <div class="toggle-group">
+                            <div class="toggle-option" data-period="month">Miesiąc</div>
+                            <div class="toggle-option active" data-period="year">Rok</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div style="text-align: center; margin-bottom: 32px;">
+                    <button class="reset-btn" id="reset-calc">↻ Przywróć domyślne wartości</button>
+                </div>
+                
+                <div class="results-card">
+                    <div class="results-main">
+                        <div class="results-label" id="results-label">Tracisz około:</div>
+                        <div class="results-amount" id="lost-profit">0 zł</div>
+                        <p class="results-subtext" id="results-subtext">To tylko różnica między potencjałem a tym, co dziś dowozi Twoja strona.</p>
+                        
+                        <div class="results-stats">
+                            <div class="stat-item">
+                                <div class="stat-value" id="lost-clients">0</div>
+                                <div class="stat-label">Straceni klienci / rok</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-value" id="actual-clients">0</div>
+                                <div class="stat-label">Realni klienci / rok</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-value" id="potential-clients">0</div>
+                                <div class="stat-label">Potencjalni klienci / rok</div>
+                            </div>
+                        </div>
+                        
+                        <div class="comparison-bars">
+                            <div class="bar-item">
+                                <div class="bar-label">
+                                    <span>Realna konwersja</span>
+                                    <span id="actual-bar-label">1.2%</span>
+                                </div>
+                                <div class="bar-bg">
+                                    <div class="bar-fill" id="actual-bar" style="width: 6%;"></div>
+                                </div>
+                            </div>
+                            <div class="bar-item">
+                                <div class="bar-label">
+                                    <span>Potencjalna konwersja</span>
+                                    <span id="potential-bar-label">4.0%</span>
+                                </div>
+                                <div class="bar-bg">
+                                    <div class="bar-fill" id="potential-bar" style="width: 20%;"></div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="insight-box">
+                            <p class="insight-text" id="insight-text"></p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Simulation Section -->
+                <div class="simulation-section">
+                    <h3 class="simulation-title">Symulacja poprawy</h3>
+                    <div class="form-group">
+                        <label class="form-label">
+                            Załóżmy, że interaktywna strona podnosi konwersję do:
+                        </label>
+                        <div class="slider-wrapper">
+                            <input type="range" id="improved" class="slider" min="0" max="20" step="0.1" value="2.5">
+                            <span class="slider-value"><span id="improved-value">2.5</span>%</span>
+                        </div>
+                    </div>
+                    
+                    <div class="simulation-result">
+                        <div class="simulation-label">Odzyskany zysk rocznie:</div>
+                        <div class="simulation-value" id="recovered-profit">0 zł</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Quiz Section -->
+    <section class="section scroll-reveal" id="quiz">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Czy Twoja strona pracuje dla Ciebie?</h2>
+                <p class="section-description">Odpowiedz na 5 pytań. Wynik dostaniesz od razu — bez wysyłania danych.</p>
+            </div>
+            
+            <div class="quiz-wrapper">
+                <div class="quiz-question" data-question="1">
+                    <div class="question-text">1. Czy w 5 sekund da się zrozumieć, co oferujesz?</div>
+                    <div class="question-options">
+                        <div class="quiz-option" data-value="2">Tak</div>
+                        <div class="quiz-option" data-value="1">Raczej</div>
+                        <div class="quiz-option" data-value="0">Nie</div>
+                    </div>
+                </div>
+                
+                <div class="quiz-question" data-question="2">
+                    <div class="question-text">2. Czy użytkownik ma jasną ścieżkę: co kliknąć dalej?</div>
+                    <div class="question-options">
+                        <div class="quiz-option" data-value="2">Tak</div>
+                        <div class="quiz-option" data-value="1">Raczej</div>
+                        <div class="quiz-option" data-value="0">Nie</div>
+                    </div>
+                </div>
+                
+                <div class="quiz-question" data-question="3">
+                    <div class="question-text">3. Czy strona daje natychmiastową odpowiedź (wycena / kalkulacja / dobór)?</div>
+                    <div class="question-options">
+                        <div class="quiz-option" data-value="2">Tak</div>
+                        <div class="quiz-option" data-value="1">Raczej</div>
+                        <div class="quiz-option" data-value="0">Nie</div>
+                    </div>
+                </div>
+                
+                <div class="quiz-question" data-question="4">
+                    <div class="question-text">4. Czy strona redukuje niepewność klienta (pokazuje konkret, liczby, scenariusze)?</div>
+                    <div class="question-options">
+                        <div class="quiz-option" data-value="2">Tak</div>
+                        <div class="quiz-option" data-value="1">Raczej</div>
+                        <div class="quiz-option" data-value="0">Nie</div>
+                    </div>
+                </div>
+                
+                <div class="quiz-question" data-question="5">
+                    <div class="question-text">5. Czy kontakt lub zamówienie jest możliwe bez frustracji (krótko i jasno)?</div>
+                    <div class="question-options">
+                        <div class="quiz-option" data-value="2">Tak</div>
+                        <div class="quiz-option" data-value="1">Raczej</div>
+                        <div class="quiz-option" data-value="0">Nie</div>
+                    </div>
+                </div>
+                
+                <div class="quiz-submit">
+                    <button class="btn btn-primary" id="quiz-submit">Zobacz wynik</button>
+                </div>
+                
+                <div class="quiz-results" id="quiz-results" style="display: none;">
+                    <div class="quiz-score" id="quiz-score">0/10</div>
+                    <div class="quiz-verdict" id="quiz-verdict"></div>
+                    <p class="quiz-description" id="quiz-description"></p>
+                    <div class="recommendations">
+                        <h4 class="recommendations-title">Rekomendacje:</h4>
+                        <div id="recommendations-list"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Examples Section -->
+    <section class="section scroll-reveal" id="examples">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">To wszystko działa bez serwera</h2>
+                <p class="section-description">
+                    Wszystko, co widzisz powyżej:<br>
+                    • działa w przeglądarce<br>
+                    • nie zapisuje danych<br>
+                    • liczy i reaguje natychmiast<br><br>
+                    To wystarczy, by strona stała się narzędziem.
+                </p>
+            </div>
+            
+            <div class="examples-grid">
+                <div class="example-card">
+                    <div class="example-icon">🧮</div>
+                    <h3 class="example-title">Kalkulatory i wyceny</h3>
+                    <p class="feature-description">Instant pricing, ROI calculators, savings estimators</p>
+                </div>
+                
+                <div class="example-card">
+                    <div class="example-icon">❓</div>
+                    <h3 class="example-title">Quizy decyzyjne</h3>
+                    <p class="feature-description">Product finders, compatibility tests, recommendations</p>
+                </div>
+                
+                <div class="example-card">
+                    <div class="example-icon">⚙️</div>
+                    <h3 class="example-title">Konfiguratory usług</h3>
+                    <p class="feature-description">Service builders, package customizers, interactive demos</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Final CTA Section -->
+    <section class="cta-section scroll-reveal">
+        <div class="container">
+            <h2 class="cta-title">Twoja strona też może tak działać.</h2>
+            <p class="cta-subtitle">Nie musisz budować aplikacji. Czasem wystarczy, że strona zacznie myśleć.</p>
+            <a href="#contact" class="btn btn-primary" style="font-size: 1.125rem; padding: 20px 40px;">
+                Chcę stronę, która pracuje
+            </a>
+            <p class="micro-text" style="margin-top: 24px;">Tworzymy interaktywne strony i mini-narzędzia jako DAYS.</p>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-logo"><img src="logo_days.png" alt="logo DAYS"></div>
+            <p class="footer-tagline">Twój cyfrowy partner w biznesie</p>
+            
+            <div class="privacy-note">
+                🔒 Dane nie są wysyłane — wszystko liczone lokalnie
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Calculator Logic
+        const visits = document.getElementById('visits');
+        const potentialSlider = document.getElementById('potential');
+        const actualSlider = document.getElementById('actual');
+        const profit = document.getElementById('profit');
+        const improvedSlider = document.getElementById('improved');
+        
+        const potentialValue = document.getElementById('potential-value');
+        const actualValue = document.getElementById('actual-value');
+        const improvedValue = document.getElementById('improved-value');
+        
+        const lostProfitEl = document.getElementById('lost-profit');
+        const lostClientsEl = document.getElementById('lost-clients');
+        const actualClientsEl = document.getElementById('actual-clients');
+        const potentialClientsEl = document.getElementById('potential-clients');
+        const insightTextEl = document.getElementById('insight-text');
+        const recoveredProfitEl = document.getElementById('recovered-profit');
+        const resultsLabelEl = document.getElementById('results-label');
+        const resultsSubtextEl = document.getElementById('results-subtext');
+        
+        const actualBar = document.getElementById('actual-bar');
+        const potentialBar = document.getElementById('potential-bar');
+        const actualBarLabel = document.getElementById('actual-bar-label');
+        const potentialBarLabel = document.getElementById('potential-bar-label');
+        
+        let period = 'year';
+        
+        // Store previous values for smooth animations
+        const previousValues = {
+            lostProfit: 0,
+            lostClients: 0,
+            actualClients: 0,
+            potentialClients: 0,
+            recoveredProfit: 0
+        };
+        
+        // Toggle period
+        document.querySelectorAll('.toggle-option').forEach(option => {
+            option.addEventListener('click', function() {
+                document.querySelectorAll('.toggle-option').forEach(opt => opt.classList.remove('active'));
+                this.classList.add('active');
+                period = this.dataset.period;
+                calculateResults();
+            });
+        });
+        
+        // Update slider values
+        potentialSlider.addEventListener('input', () => {
+            potentialValue.textContent = parseFloat(potentialSlider.value).toFixed(1);
+            calculateResults();
+        });
+        
+        actualSlider.addEventListener('input', () => {
+            actualValue.textContent = parseFloat(actualSlider.value).toFixed(1);
+            calculateResults();
+        });
+        
+        improvedSlider.addEventListener('input', () => {
+            improvedValue.textContent = parseFloat(improvedSlider.value).toFixed(1);
+            calculateResults();
+        });
+        
+        // Input listeners
+        visits.addEventListener('input', calculateResults);
+        profit.addEventListener('input', calculateResults);
+        
+        // Reset button
+        document.getElementById('reset-calc').addEventListener('click', () => {
+            visits.value = 1200;
+            potentialSlider.value = 4.0;
+            actualSlider.value = 1.2;
+            profit.value = 350;
+            improvedSlider.value = 2.5;
+            potentialValue.textContent = '4.0';
+            actualValue.textContent = '1.2';
+            improvedValue.textContent = '2.5';
+            period = 'year';
+            document.querySelectorAll('.toggle-option').forEach(opt => opt.classList.remove('active'));
+            document.querySelector('[data-period="year"]').classList.add('active');
+            calculateResults();
+        });
+        
+        // Calculate results
+        function calculateResults(animate = true) {
+            const monthlyVisits = parseFloat(visits.value) || 0;
+            const potentialRate = parseFloat(potentialSlider.value) / 100;
+            const actualRate = parseFloat(actualSlider.value) / 100;
+            const profitPerClient = parseFloat(profit.value) || 0;
+            const improvedRate = parseFloat(improvedSlider.value) / 100;
+            
+            const multiplier = period === 'year' ? 12 : 1;
+            
+            const potentialClients = Math.round(monthlyVisits * potentialRate * multiplier);
+            const actualClients = Math.round(monthlyVisits * actualRate * multiplier);
+            const lostClients = Math.max(0, potentialClients - actualClients);
+            const lostProfit = lostClients * profitPerClient;
+            
+            // Check if actual conversion exceeds potential
+            const isOverPerforming = actualRate > potentialRate;
+            
+            const improvedClients = Math.round(monthlyVisits * improvedRate * multiplier);
+            const recoveredClients = Math.max(0, improvedClients - actualClients);
+            const recoveredProfit = recoveredClients * profitPerClient;
+            
+            if (animate) {
+                // Update UI with animation
+                animateValue(lostProfitEl, previousValues.lostProfit, lostProfit, 600, ' zł', 'lostProfit');
+                animateValue(lostClientsEl, previousValues.lostClients, lostClients, 600, '', 'lostClients');
+                animateValue(actualClientsEl, previousValues.actualClients, actualClients, 600, '', 'actualClients');
+                animateValue(potentialClientsEl, previousValues.potentialClients, potentialClients, 600, '', 'potentialClients');
+                animateValue(recoveredProfitEl, previousValues.recoveredProfit, recoveredProfit, 600, ' zł', 'recoveredProfit');
+            } else {
+                // Set values immediately without animation
+                lostProfitEl.textContent = formatNumber(lostProfit) + ' zł';
+                lostClientsEl.textContent = formatNumber(lostClients);
+                actualClientsEl.textContent = formatNumber(actualClients);
+                potentialClientsEl.textContent = formatNumber(potentialClients);
+                recoveredProfitEl.textContent = formatNumber(recoveredProfit);
+                
+                // Store initial values
+                previousValues.lostProfit = lostProfit;
+                previousValues.lostClients = lostClients;
+                previousValues.actualClients = actualClients;
+                previousValues.potentialClients = potentialClients;
+                previousValues.recoveredProfit = recoveredProfit;
+            }
+            
+            // Update bars
+            const maxRate = Math.max(potentialRate, actualRate, improvedRate) * 100;
+            const actualPercent = (actualRate * 100 / maxRate) * 100;
+            const potentialPercent = (potentialRate * 100 / maxRate) * 100;
+            
+            actualBar.style.width = actualPercent + '%';
+            potentialBar.style.width = potentialPercent + '%';
+            actualBarLabel.textContent = (actualRate * 100).toFixed(1) + '%';
+            potentialBarLabel.textContent = (potentialRate * 100).toFixed(1) + '%';
+            
+            // Update labels based on performance
+            if (isOverPerforming) {
+                resultsLabelEl.textContent = 'Sukces! Zyskujesz:';
+                resultsSubtextEl.textContent = 'Twoja strona działa lepiej niż zakładany potencjał - gratulacje!';
+            } else {
+                resultsLabelEl.textContent = 'Tracisz około:';
+                resultsSubtextEl.textContent = 'To tylko różnica między potencjałem a tym, co dziś dowozi Twoja strona.';
+            }
+            
+            // Update insight
+            updateInsight(lostClients, lostProfit, profitPerClient, isOverPerforming, actualRate, potentialRate);
+        }
+        
+        function animateValue(element, start, end, duration, suffix = '', key = null) {
+            // If animation is running, use current displayed value as new start
+            if (element.animationTimer) {
+                clearInterval(element.animationTimer);
+                // Extract current numeric value from display
+                const currentText = element.textContent.replace(/[^\d]/g, '');
+                if (currentText && key) {
+                    start = parseInt(currentText) || start;
+                }
+            }
+            
+            const range = end - start;
+            const increment = range / (duration / 16);
+            let current = start;
+            
+            element.animationTimer = setInterval(() => {
+                current += increment;
+                if ((increment > 0 && current >= end) || (increment < 0 && current <= end)) {
+                    current = end;
+                    clearInterval(element.animationTimer);
+                    element.animationTimer = null;
+                    
+                    // Store the final value for next animation AFTER animation completes
+                    if (key) {
+                        previousValues[key] = end;
+                    }
+                }
+                element.textContent = formatNumber(Math.round(current)) + suffix;
+            }, 16);
+        }
+        
+        function formatNumber(num) {
+            return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
+        }
+        
+        function updateInsight(lostClients, lostProfit, profitPerClient, isOverPerforming, actualRate, potentialRate) {
+            if (isOverPerforming) {
+                // Strona działa lepiej niż oczekiwano!
+                const overPerformanceInsights = [
+                    `Gratulacje! Twoja strona konwertuje ${(actualRate * 100).toFixed(1)}% - to lepiej niż zakładany potencjał ${(potentialRate * 100).toFixed(1)}%!`,
+                    `Świetna robota! Przekraczasz oczekiwania o ${((actualRate - potentialRate) * 100).toFixed(1)} punktów procentowych.`,
+                    `Twoja strona działa wyśmienicie - konwersja wyższa niż potencjał oznacza doskonałą optymalizację!`,
+                    `Zero strat - Twoja strona pracuje na pełnych obrotach i dowozi więcej niż zakładano.`
+                ];
+                const randomInsight = overPerformanceInsights[Math.floor(Math.random() * overPerformanceInsights.length)];
+                insightTextEl.textContent = randomInsight;
+                insightTextEl.parentElement.style.borderColor = 'var(--success)';
+                insightTextEl.parentElement.style.background = 'rgba(0, 255, 136, 0.05)';
+            } else {
+                // Normalne insighty o stratach
+                const insights = [
+                    `To równowartość ${lostClients} nowych klientów, którzy już byli blisko decyzji.`,
+                    `To więcej niż koszt świetnej strony — a dzieje się co roku.`,
+                    `Twoja strona może odzyskać te pieniądze, zanim je stracisz.`,
+                    `To nie jest marketing. To matematyka.`,
+                    `Każdy stracony klient to ${formatNumber(profitPerClient)} zł, które mogły być Twoje.`
+                ];
+                
+                const randomInsight = insights[Math.floor(Math.random() * insights.length)];
+                insightTextEl.textContent = randomInsight;
+                insightTextEl.parentElement.style.borderColor = 'rgba(0, 245, 212, 0.2)';
+                insightTextEl.parentElement.style.background = 'rgba(0, 245, 212, 0.05)';
+            }
+        }
+        
+        // Quiz Logic
+        const quizAnswers = {};
+        
+        document.querySelectorAll('.quiz-option').forEach(option => {
+            option.addEventListener('click', function() {
+                const question = this.closest('.quiz-question').dataset.question;
+                const value = parseInt(this.dataset.value);
+                
+                this.closest('.question-options').querySelectorAll('.quiz-option').forEach(opt => {
+                    opt.classList.remove('selected');
+                });
+                this.classList.add('selected');
+                
+                quizAnswers[question] = value;
+            });
+        });
+        
+        document.getElementById('quiz-submit').addEventListener('click', () => {
+            const totalQuestions = 5;
+            const answeredQuestions = Object.keys(quizAnswers).length;
+            
+            if (answeredQuestions < totalQuestions) {
+                alert('Proszę odpowiedzieć na wszystkie pytania.');
+                return;
+            }
+            
+            const score = Object.values(quizAnswers).reduce((sum, val) => sum + val, 0);
+            showQuizResults(score);
+        });
+        
+        function showQuizResults(score) {
+            const resultsEl = document.getElementById('quiz-results');
+            const scoreEl = document.getElementById('quiz-score');
+            const verdictEl = document.getElementById('quiz-verdict');
+            const descriptionEl = document.getElementById('quiz-description');
+            const recommendationsEl = document.getElementById('recommendations-list');
+            
+            scoreEl.textContent = `${score}/10`;
+            
+            let verdict, description, recommendations;
+            
+            if (score <= 3) {
+                verdict = 'Strona-wizytówka';
+                description = 'Ładna, ale bierna. Użytkownik widzi informacje, ale nie dostaje pomocy w decyzji.';
+                recommendations = [
+                    'Dodaj jedno narzędzie: kalkulator / dobór / mini-test',
+                    'Skróć ścieżkę kontaktu do 1 kliknięcia',
+                    'Pokaż konkret: liczby, przykłady, scenariusze'
+                ];
+            } else if (score <= 7) {
+                verdict = 'Strona informacyjna';
+                description = 'Masz fundament, ale brakuje interakcji, które zamieniają zainteresowanie w decyzję.';
+                recommendations = [
+                    'Dodaj sekcję "sprawdź / policz / porównaj"',
+                    'Wprowadź jasne CTA w 2–3 miejscach',
+                    'Zamień część tekstu na interaktywną odpowiedź'
+                ];
+            } else {
+                verdict = 'Strona-narzędzie';
+                description = 'To jest kierunek: strona nie tylko wygląda — ona pomaga. Tak buduje się przewagę.';
+                recommendations = [
+                    'Rozwiń narzędzia o 1 dodatkową symulację',
+                    'Dodaj personalizację (np. scenariusze użytkownika)',
+                    'Zadbaj o szybkość i micro-interactions'
+                ];
+            }
+            
+            verdictEl.textContent = verdict;
+            descriptionEl.textContent = description;
+            
+            recommendationsEl.innerHTML = recommendations
+                .map(rec => `<div class="recommendation-item">${rec}</div>`)
+                .join('');
+            
+            resultsEl.style.display = 'block';
+            resultsEl.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
+        
+        // Scroll Reveal Animation
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -100px 0px'
+        };
+        
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('revealed');
+                }
+            });
+        }, observerOptions);
+        
+        document.querySelectorAll('.scroll-reveal').forEach(el => {
+            observer.observe(el);
+        });
+        
+        // Smooth scrolling
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({ behavior: 'smooth' });
+                }
+            });
+        });
+        
+        // Initial calculation (without animation)
+        calculateResults(false);
+    </script>
+</body>
+</html>
